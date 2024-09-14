@@ -5,7 +5,7 @@ import React, { useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { usePathname, useRouter } from 'next/navigation'
 
-const PromptCard = ({key,post,handleTagClick ,handleEdit,handleDelete}) => {
+const PromptCard = ({post,handleTagClick ,handleEdit,handleDelete}) => {
 
   const [copied, setCopied] = useState("");
   const pathName = usePathname();
