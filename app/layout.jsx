@@ -1,6 +1,7 @@
 import '@styles/globals.css';
 import Nav from '@components/Nav';
 import Provider from '@components/Provider';
+import Head from 'next/head'; // Import Head to include favicon
 
 
 export const metadata={
@@ -11,6 +12,10 @@ export const metadata={
 const RootLayout = ({children}) => {
   return (
     <html lang='en'>
+        <head>
+            <link rel="icon" href='/logo.ico' sizes="any" />
+            
+        </head>
         <body>
             <Provider>
                 <div className="main">
