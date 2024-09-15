@@ -2,19 +2,22 @@ import Prompt from "@models/prompt";
 import { connectToDB } from "@utils/database";
 import { NextRequest } from 'next/server';
 
-export const GET = async ({ params }: { params: { id: string } }) => {
-    const id=params.id;
+
+export const GET = async (req: NextRequest) => {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id');
+
     try {
         await connectToDB();
 
         const prompt = await Prompt.findById(id).populate('creator');
-        if(!prompt)return new Response('Prompt not Found',{status:400});
+        if (!prompt) return new Response('Prompt not found', { status: 404 });
 
-        return new Response(JSON.stringify(prompt), { status: 200 })
+        return new Response(JSON.stringify(prompt), { status: 200 });
     } catch (error) {
-        return new Response("Failed to fetch all prompts", { status: 500 })
+        return new Response('Failed to fetch the prompt', { status: 500 });
     }
-} 
+};
 
 export const PATCH = async (request:NextRequest, { params }: { params: { id: string } }) => {
     const { prompt, tag } = await request.json();
@@ -39,11 +42,14 @@ export const PATCH = async (request:NextRequest, { params }: { params: { id: str
     }
 };
 
-export const DELETE = async ( { params }: { params: { id: string } }) => {
+export const DELETE = async (req: NextRequest) => {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id');
+
     try {
         await connectToDB();
-        
-        await Prompt.findByIdAndDelete(params.id);
+
+        await Prompt.findByIdAndDelete(id);
 
         return new Response("Prompt deleted successfully", { status: 200 });
     } catch (error) {

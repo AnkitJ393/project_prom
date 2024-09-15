@@ -1,11 +1,15 @@
 import Prompt from "@models/prompt";
 import { connectToDB } from "@utils/database";
+import { NextRequest } from "next/server";
 
-export const GET = async ( { params }:{params:{id:string}}) => {
+export const GET = async (req: NextRequest) => {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id');
+
     try {
         await connectToDB()
 
-        const prompts = await Prompt.find({ creator: params.id }).populate("creator")
+        const prompts = await Prompt.find({ creator: id }).populate("creator")
 
         return new Response(JSON.stringify(prompts), { status: 200 })
     } catch (error) {
