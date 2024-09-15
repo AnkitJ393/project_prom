@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Form from '@components/Form';
 
+import { Suspense } from 'react';
+
+
 const UpdatePrompt = () => {
 
     const router = useRouter();
@@ -63,4 +66,12 @@ const UpdatePrompt = () => {
       );
 }
 
-export default UpdatePrompt
+
+
+export default function UpdatePromptPage() {
+  return (
+    <Suspense fallback={<div>Loading prompt details...</div>}>
+      <UpdatePrompt />
+    </Suspense>
+  );
+}

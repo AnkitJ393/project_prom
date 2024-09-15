@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 
 import Profile from "@components/Profile";
 
-const UserProfile = ({params}) => {
+const UserProfilePage = ({params}) => {
     const searchParam=useSearchParams();
     const userName=searchParam.get('name');
 
@@ -31,4 +31,11 @@ const UserProfile = ({params}) => {
   )
 }
 
-export default UserProfile;
+
+export default function UserProfile({params}) {
+    return (
+      <Suspense fallback={<div>Loading Profile details...</div>}>
+        <UserProfilePage params={params}/>
+      </Suspense>
+    );
+  }
