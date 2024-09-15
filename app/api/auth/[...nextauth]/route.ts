@@ -28,7 +28,6 @@ const handler=NextAuth({
                         email:profile.email
                     })
     
-                    //if not ,create a new user 
                     if(!userExists){
                         await User.create({
                             email:profile.email,
