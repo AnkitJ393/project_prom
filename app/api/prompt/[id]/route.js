@@ -1,36 +1,34 @@
-import Prompt from "@models/prompt";
+import Prompt from "../../../../models/prompt";
 import { connectToDB } from "@utils/database";
-import { NextRequest } from 'next/server';
 
-
-export const GET = async (req: NextRequest) => {
-    const { searchParams } = new URL(req.url);
-    const id = searchParams.get('id');
-
+export const GET = async ({ params }) => {
     try {
-        await connectToDB();
+        await connectToDB()
+        console.log(params);
+        const prompt = await Prompt.findById(params.id).populate("creator")
+        if (!prompt) return new Response("Prompt Not Found", { status: 404 });
 
-        const prompt = await Prompt.findById(id).populate('creator');
-        if (!prompt) return new Response('Prompt not found', { status: 404 });
+        return new Response(JSON.stringify(prompt), { status: 200 })
 
-        return new Response(JSON.stringify(prompt), { status: 200 });
     } catch (error) {
-        return new Response('Failed to fetch the prompt', { status: 500 });
+        return new Response("Internal Server Error", { status: 500 });
     }
-};
+}
 
-export const PATCH = async (request:NextRequest, { params }: { params: { id: string } }) => {
+export const PATCH = async (request, { params }) => {
     const { prompt, tag } = await request.json();
 
     try {
         await connectToDB();
 
+        // Find the existing prompt by ID
         const existingPrompt = await Prompt.findById(params.id);
 
         if (!existingPrompt) {
             return new Response("Prompt not found", { status: 404 });
         }
 
+        // Update the prompt with new data
         existingPrompt.prompt = prompt;
         existingPrompt.tag = tag;
 
@@ -42,14 +40,12 @@ export const PATCH = async (request:NextRequest, { params }: { params: { id: str
     }
 };
 
-export const DELETE = async (req: NextRequest) => {
-    const { searchParams } = new URL(req.url);
-    const id = searchParams.get('id');
-
+export const DELETE = async ({ params }) => {
     try {
         await connectToDB();
 
-        await Prompt.findByIdAndDelete(id);
+        // Find the prompt by ID and remove it
+        await Prompt.findByIdAndDelete(params.id);
 
         return new Response("Prompt deleted successfully", { status: 200 });
     } catch (error) {
